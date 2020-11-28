@@ -5,7 +5,6 @@ const fetch = require('node-fetch');
 
 module.exports.getAllEvents = async function () {
     let events = await eventsGet();
-    console.log(events);
     return events;
 };
 
@@ -18,7 +17,6 @@ module.exports.getTodaysEvents = async function () {
             todaysEvents.push(x);
         }
     }
-    console.log(todaysEvents);
     return todaysEvents;
 };
 
@@ -34,7 +32,6 @@ module.exports.getOngoingEvents = async function () {
             ongoingEvents.push(x);
         }
     }
-    console.log(ongoingEvents);
     return ongoingEvents;
 };
 
@@ -45,7 +42,6 @@ module.exports.getEventsWithTags = async function (tagArray) {
         .then(res => res.json())
         .then(json => json.data)
         .then(data => events = data)
-    console.log(events);
     return events;
 };
 

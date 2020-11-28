@@ -1,14 +1,17 @@
 {
-  "name": "npmtestiohjteknologiat",
-  "version": "1.0.0",
-  "description": "testi paketti",
+  "name": "hoa-events",
+  "version": "1.0.2",
+  "description": "helskinki open apin eventtien haku paketti",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "Jussi Testi",
+  "author": "Jussi Salmela",
   "license": "ISC",
   "dependencies": {
     "node-fetch": "^2.6.1"
-  }
+  },
+  "files": [
+    "index.js"
+  ]
 }
