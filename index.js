@@ -1,7 +1,4 @@
 const fetch = require('node-fetch');
-// asd = require('./index'); asd.getTodaysEvents();
-// asd = require('./index'); asd.getOngoingEvents();
-// asd = require('./index'); asd.getEventsWithTags(['health','trips']);
 
 module.exports.getAllEvents = async function () {
     let events = await eventsGet();
@@ -11,10 +8,12 @@ module.exports.getAllEvents = async function () {
 module.exports.getTodaysEvents = async function () {
     let events = await eventsGet();
     let todaysEvents = [];
-    for (let x of events){
-        let eventDate = new Date(Date.parse(x.event_dates.starting_day))
-        if (dateIsToday(eventDate)) {
-            todaysEvents.push(x);
+    let today = new Date();
+    for (let event of events) {
+        let eventDate = new Date(Date.parse(event.event_dates.starting_day));
+        eventDate.setTime(eventDate.getTime() - (2 * 60 * 60 * 1000));
+        if (dateMatches(today, eventDate)) {
+            todaysEvents.push(event);
         }
     }
     return todaysEvents;
@@ -24,12 +23,13 @@ module.exports.getOngoingEvents = async function () {
     let events = await eventsGet();
     let ongoingEvents = [];
     let today = new Date();
-    today.setTime(today.getTime() + (2*60*60*1000))
-    for (let x of events){
-        let eventStart = new Date(Date.parse(x.event_dates.starting_day));
-        let eventEnd = new Date(Date.parse(x.event_dates.ending_day));
-        if (today >= eventStart && today <= eventEnd) {
-            ongoingEvents.push(x);
+    for (let event of events) {
+        let eventStart = new Date(Date.parse(event.event_dates.starting_day));
+        eventStart.setTime(eventStart.getTime() - (2 * 60 * 60 * 1000));
+        let eventEnd = new Date(Date.parse(event.event_dates.ending_day));
+        eventEnd.setTime(eventEnd.getTime() - (2 * 60 * 60 * 1000));
+        if (today >= eventStart && today < eventEnd) {
+            ongoingEvents.push(event);
         }
     }
     return ongoingEvents;
@@ -45,6 +45,32 @@ module.exports.getEventsWithTags = async function (tagArray) {
     return events;
 };
 
+module.exports.getTags = async function () {
+    let tagsData;
+    let tags = [];
+    await fetch('http://open-api.myhelsinki.fi/v1/events/')
+        .then(res => res.json())
+        .then(json => json.tags)
+        .then(data => tagsData = data)
+    for (const key in tagsData) {
+        tags.push(tagsData[key]);
+    }
+    return tags;
+};
+
+module.exports.getEventsStarts = async function (date) {
+    let events = await eventsGet();
+    let eventsStart = [];
+    for (let event of events) {
+        let eventDate = new Date(Date.parse(event.event_dates.starting_day));
+        eventDate.setTime(eventDate.getTime() - (2 * 60 * 60 * 1000));
+        if (dateMatches(date, eventDate)) {
+            eventsStart.push(event);
+        }
+    }
+    return eventsStart;
+};
+
 async function eventsGet() {
     let events;
     await fetch('http://open-api.myhelsinki.fi/v1/events/')
@@ -54,10 +80,8 @@ async function eventsGet() {
     return events;
 }
 
-function dateIsToday(date) {
-    let today = new Date()
-    date.setTime(date.getTime() - (2*60*60*1000))
-    return date.getDate() === today.getDate() &&
-        date.getMonth() === today.getMonth() &&
-        date.getFullYear() === today.getFullYear();
+function dateMatches(date, eventstart) {
+    return date.getDate() === eventstart.getDate() &&
+        date.getMonth() === eventstart.getMonth() &&
+        date.getFullYear() === eventstart.getFullYear();
 };

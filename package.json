@@ -1,17 +1,24 @@
 {
   "name": "hoa-events",
-  "version": "1.0.2",
-  "description": "helskinki open apin eventtien haku paketti",
+  "version": "1.0.8",
+  "description": "Package to get events easily from http://open-api.myhelsinki.fi",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "Jussi Salmela",
+  "author": "Jussi Salmela <jusa.salmela@gmail.com>",
   "license": "ISC",
   "dependencies": {
     "node-fetch": "^2.6.1"
   },
   "files": [
     "index.js"
+  ],
+  "keywords": [
+    "helsinki",
+    "events",
+    "helsinki events",
+    "myhelsinki",
+    "myhelsinki open api"
   ]
 }
